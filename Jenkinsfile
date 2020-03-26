@@ -1,15 +1,8 @@
-pipeline {
-    agent {
-        docker {
-            image 'maven:3-alpine' 
-            args '-v /root/.m2:/root/.m2' 
-        }
-    }
-    stages {
-        stage('Build') { 
-            steps {
-                sh 'mvn -B -DskipTests clean package' 
-            }
-        }
-    }
+node {
+checkout scm
+docker.withRegistry('https://registry.hub.docker.com', 'docker') { 
+def customImage = docker.build("hariramans/testapp:v1") 
+/* Push the container to the custom Registry */
+customImage.push()
+}
 }
